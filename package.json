@@ -1,0 +1,24 @@
+{
+  "name": "backend-project-mintu-krishnan-au13",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attainu/backend-project-mintu-krishnan-au13.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/attainu/backend-project-mintu-krishnan-au13/issues"
+  },
+  "homepage": "https://github.com/attainu/backend-project-mintu-krishnan-au13#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
