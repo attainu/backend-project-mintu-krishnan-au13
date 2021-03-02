@@ -13,6 +13,7 @@ app.use((req, res, next) => {
   console.log('middleware working');
   next();
 });
+// new update
 
 // 2.ROUTE HANDLERS
 
@@ -51,7 +52,9 @@ const getTravel = (req, res) => {
 };
 const createTravel = (req, res) => {
   const newId = travels[travels.length - 1].id + 1;
-  const newTravel = Object.assign({ id: newId }, req.body);
+  const newTravel = Object.assign({
+    id: newId
+  }, req.body);
   travels.push(newTravel);
 
   fs.writeFile(
