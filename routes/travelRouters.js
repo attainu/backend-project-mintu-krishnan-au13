@@ -3,10 +3,12 @@ const travelController = require('./../controller/travelController');
 
 const router = express.Router();
 
+router.param('id', travelController.checkID);
+
 router
   .route('/')
   .get(travelController.getAllTravels)
-  .post(travelController.createTravel);
+  .post(travelController.checkBody, travelController.createTravel);
 
 router
   .route('/:id')
