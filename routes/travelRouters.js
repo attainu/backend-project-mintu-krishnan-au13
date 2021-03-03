@@ -3,8 +3,6 @@ const travelController = require('./../controller/travelController');
 
 const router = express.Router();
 
-router.param('id', travelController.checkID);
-
 router
   .route('/')
   .get(travelController.getAllTravels)
