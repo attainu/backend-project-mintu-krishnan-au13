@@ -2,12 +2,17 @@ const Travel = require('./../models/travelModel');
 
 exports.getAllTravels = async (req, res) => {
   try {
-    // build query
+    // 1. build query
     const queryObj = { ...req.query };
+
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    const query = Travel.find(queryObj);
+    //2.  advanced filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    const query = Travel.find(JSON.parse(queryStr));
 
     // const travels = Travel.find()
     //   .where('duration')
@@ -15,7 +20,7 @@ exports.getAllTravels = async (req, res) => {
     //   .where('difficulty')
     //   .equals('easy');
 
-    // execute query
+    //3. execute query
     const travels = await query;
 
     res.status(200).json({
