@@ -6,7 +6,7 @@ const router = express.Router();
 router
   .route('/')
   .get(travelController.getAllTravels)
-  .post(travelController.checkBody, travelController.createTravel);
+  .post(travelController.createTravel);
 
 router
   .route('/:id')
