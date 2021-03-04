@@ -2,7 +2,22 @@ const Travel = require('./../models/travelModel');
 
 exports.getAllTravels = async (req, res) => {
   try {
-    const travels = await Travel.find();
+    // build query
+    const queryObj = { ...req.query };
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+
+    const query = Travel.find(queryObj);
+
+    // const travels = Travel.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    // execute query
+    const travels = await query;
+
     res.status(200).json({
       status: 'success',
       results: travels.length,
