@@ -89,6 +89,16 @@ travelSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+// aggregation middleware
+travelSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({
+    $match: {
+      secretTravel: { $ne: true },
+    },
+  });
+  next();
+});
+
 const Travel = mongoose.model('travel', travelSchema);
 
 module.exports = Travel;
