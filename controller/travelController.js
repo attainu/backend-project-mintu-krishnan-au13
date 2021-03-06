@@ -139,3 +139,52 @@ exports.getTravelStats = async (req, res) => {
     });
   }
 };
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+    const plan = await Travel.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTravelStarts: { $sum: 1 },
+          travels: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numTravelStarts: -1 },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'Success ✅',
+      length: plan.length,
+      year,
+      plan,
+    });
+  } catch {
+    res.status(404).json({
+      status: 'fail ❌',
+      message: err,
+    });
+  }
+};

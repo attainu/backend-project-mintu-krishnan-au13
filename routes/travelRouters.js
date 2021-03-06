@@ -8,6 +8,7 @@ router
   .get(travelController.aliasTopTravels, travelController.getAllTravels);
 
 router.route('/travel-stats').get(travelController.getTravelStats);
+router.route('/monthly-plan/:year').get(travelController.getMonthlyPlan);
 
 router
   .route('/')
