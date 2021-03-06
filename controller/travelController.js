@@ -7,50 +7,63 @@ exports.aliasTopTravels = (req, res, next) => {
   next();
 };
 
-exports.getAllTravels = async (req, res) => {
-  try {
-    // 1. build query
-    const queryObj = { ...req.query };
+class APIfeatures {
+  constructor(query, queryString) {
+    this.query = query;
+    this.queryString = queryString;
+  }
+
+  filter() {
+    const queryObj = { ...this.queryString };
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    //2.  advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    let query = Travel.find(JSON.parse(queryStr));
-
-    // 3. Sort
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
+    this.query.find(JSON.parse(queryStr));
+    return this;
+  }
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(',').join(' ');
+      this.query.sort(sortBy);
     } else {
-      query = query.sort('-createdAt');
+      this.query.sort('-createdAt');
     }
-
-    // 4. Filed limiting
-
-    if (req.query.fields) {
-      const fields = req.query.fields.split(',').join(' ');
-      query = query.select(fields);
+    return this;
+  }
+  limitFields() {
+    if (this.queryString.fields) {
+      const fields = this.queryString.fields.split(',').join(' ');
+      this.query.select(fields);
     } else {
-      query = query.select('-__v');
+      this.query.select('-__v');
     }
-
-    // 5. Pagination
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
+    return this;
+  }
+  paginate() {
+    const page = this.queryString.page * 1 || 1;
+    const limit = this.queryString.limit * 1 || 100;
     const skip = (page - 1) * limit;
 
-    query = query.skip(skip).limit(limit);
+    this.query.skip(skip).limit(limit);
 
-    if (req.query.page) {
-      const numTravels = await Travel.countDocuments();
-      if (skip > numTravels) throw new Error('This page does not exists');
-    }
+    // if (this.queryString.page) {
+    //   const numTravels = await this.query.countDocuments();
+    //   if (skip > numTravels) throw new Error('This page does not exists');
+    // }
+    return this;
+  }
+}
 
-    //6. execute query
-    const travels = await query;
+exports.getAllTravels = async (req, res) => {
+  try {
+    const features = new APIfeatures(Travel.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const travels = await features.query;
 
     res.status(200).json({
       status: 'success',
