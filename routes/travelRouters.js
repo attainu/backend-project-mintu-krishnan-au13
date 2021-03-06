@@ -4,6 +4,10 @@ const travelController = require('./../controller/travelController');
 const router = express.Router();
 
 router
+  .route('/top-5-cheap')
+  .get(travelController.aliasTopTravels, travelController.getAllTravels);
+
+router
   .route('/')
   .get(travelController.getAllTravels)
   .post(travelController.createTravel);

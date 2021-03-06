@@ -1,5 +1,12 @@
 const Travel = require('./../models/travelModel');
 
+exports.aliasTopTravels = (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary';
+  next();
+};
+
 exports.getAllTravels = async (req, res) => {
   try {
     // 1. build query
@@ -30,8 +37,6 @@ exports.getAllTravels = async (req, res) => {
     }
 
     // 5. Pagination
-    // page=4&limit=5
-    // query = query.skip(15).limit(5);
 
     const page = req.query.page * 1 || 1;
     const limit = req.query.limit * 1 || 100;
