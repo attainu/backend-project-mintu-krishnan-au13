@@ -53,6 +53,10 @@ const travelSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
+    secretTravel: {
+      type: Boolean,
+      default: false,
+    },
     startDates: [Date],
   },
   {
@@ -64,7 +68,7 @@ const travelSchema = new mongoose.Schema(
 travelSchema.virtual('durationWeeks').get(function () {
   return Math.round((this.duration / 7) * 10) / 10;
 });
-
+// Document middleware
 travelSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -73,6 +77,17 @@ travelSchema.pre('save', function (next) {
 //   console.log(doc);
 //   next();
 // });
+
+// query middleware
+travelSchema.pre(/^find/, function (next) {
+  this.find({ secretTravel: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+travelSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  next();
+});
 
 const Travel = mongoose.model('travel', travelSchema);
 
