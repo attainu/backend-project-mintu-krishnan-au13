@@ -7,8 +7,12 @@ const travelSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A travel must have a name'],
       unique: true,
+      trim: true,
+      maxlength: [40, 'A travel name cannot exceed 40 characters'],
+      minlength: [5, 'A travel name must be minimum of 10 characters'],
     },
     slug: String,
+
     duration: {
       type: Number,
       required: [true, 'A travel must have a duration'],
@@ -20,10 +24,16 @@ const travelSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A travel must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty is either: easy, medium, difficult',
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [0.5, 'Ratings must be above 0.5'],
+      max: [5, 'Ratings cannot exceed 5'],
     },
     ratingsQuantity: {
       type: Number,
@@ -33,7 +43,15 @@ const travelSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'A travel must have a price'],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val < this.price;
+        },
+        message: 'Discount price ({VALUE}) should be below regular price',
+      },
+    },
     summary: {
       type: String,
       trim: true,
