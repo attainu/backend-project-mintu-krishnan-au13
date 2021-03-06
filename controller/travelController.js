@@ -102,3 +102,40 @@ exports.deleteTravel = async (req, res) => {
     });
   }
 };
+
+exports.getTravelStats = async (req, res) => {
+  try {
+    const stats = await Travel.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          numTravels: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 },
+      },
+      // {
+      //   $match: { _id: { $ne: 'EASY' } },
+      // },
+    ]);
+
+    res.status(200).json({
+      status: 'Success ✅',
+      stats,
+    });
+  } catch {
+    res.status(404).json({
+      status: 'fail ❌',
+      message: err,
+    });
+  }
+};
