@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { deleteTravel } = require('../controller/travelController');
+const slugify = require('slugify');
 
 const travelSchema = new mongoose.Schema(
   {
@@ -8,6 +8,7 @@ const travelSchema = new mongoose.Schema(
       required: [true, 'A travel must have a name'],
       unique: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, 'A travel must have a duration'],
@@ -63,6 +64,15 @@ const travelSchema = new mongoose.Schema(
 travelSchema.virtual('durationWeeks').get(function () {
   return Math.round((this.duration / 7) * 10) / 10;
 });
+
+travelSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+// travelSchema.post('save', function (doc, next) {
+//   console.log(doc);
+//   next();
+// });
 
 const Travel = mongoose.model('travel', travelSchema);
 
