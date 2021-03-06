@@ -29,7 +29,22 @@ exports.getAllTravels = async (req, res) => {
       query = query.select('-__v');
     }
 
-    //3. execute query
+    // 5. Pagination
+    // page=4&limit=5
+    // query = query.skip(15).limit(5);
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTravels = await Travel.countDocuments();
+      if (skip > numTravels) throw new Error('This page does not exists');
+    }
+
+    //6. execute query
     const travels = await query;
 
     res.status(200).json({
