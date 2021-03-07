@@ -7,7 +7,11 @@ exports.aliasTopTravels = (req, res, next) => {
   req.query.fields = 'name,price,ratingsAverage,summary';
   next();
 };
-
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
+};
 exports.getAllTravels = async (req, res) => {
   try {
     const features = new APIfeatures(Travel.find(), req.query)
@@ -31,39 +35,26 @@ exports.getAllTravels = async (req, res) => {
     });
   }
 };
-exports.getTravel = async (req, res) => {
-  try {
-    const travels = await Travel.findById(req.params.id);
-    res.status(200).json({
-      status: 'Success ✅',
-      results: travels.length,
-      data: {
-        travels: travels,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'Fail Invalid Id ❌',
-      message: err,
-    });
-  }
-};
-exports.createTravel = async (req, res) => {
-  try {
-    const newTravel = await Travel.create(req.body);
-    res.status(201).json({
-      status: 'success',
-      data: {
-        travel: newTravel,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: 'failed to create travel',
-      message: err,
-    });
-  }
-};
+exports.getTravel = catchAsync(async (req, res, next) => {
+  const travels = await Travel.findById(req.params.id);
+  res.status(200).json({
+    status: 'Success ✅',
+    results: travels.length,
+    data: {
+      travels: travels,
+    },
+  });
+});
+
+exports.createTravel = catchAsync(async (req, res, next) => {
+  const newTravel = await Travel.create(req.body);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      travel: newTravel,
+    },
+  });
+});
 
 exports.updateTravel = async (req, res) => {
   try {
