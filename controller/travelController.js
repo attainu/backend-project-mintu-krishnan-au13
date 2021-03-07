@@ -1,3 +1,4 @@
+const AppError = require('../utils/apiError');
 const Travel = require('./../models/travelModel');
 const APIfeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
@@ -27,9 +28,11 @@ exports.getAllTravels = catchAsync(async (req, res, next) => {
 });
 exports.getTravel = catchAsync(async (req, res, next) => {
   const travels = await Travel.findById(req.params.id);
+  if (!travels) {
+    return next(new AppError('No travel found with that ID', 404));
+  }
   res.status(200).json({
     status: 'Success ✅',
-    results: travels.length,
     data: {
       travels: travels,
     },
@@ -51,9 +54,11 @@ exports.updateTravel = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!travels) {
+    return next(new AppError('No travel found with that ID', 404));
+  }
   res.status(200).json({
     status: 'Success ✅',
-    results: travels.length,
     data: {
       travels: travels,
     },
@@ -61,9 +66,11 @@ exports.updateTravel = catchAsync(async (req, res, next) => {
 });
 exports.deleteTravel = catchAsync(async (req, res, next) => {
   const travels = await Travel.findByIdAndDelete(req.params.id);
+  if (!travels) {
+    return next(new AppError('No travel found with that ID', 404));
+  }
   res.status(200).json({
     status: 'Success ✅',
-    results: travels.length,
     data: {
       travels: travels,
     },
