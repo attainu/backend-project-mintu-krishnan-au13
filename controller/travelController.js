@@ -9,7 +9,7 @@ exports.aliasTopTravels = (req, res, next) => {
   next();
 };
 
-exports.getAllTravels = catchAsync(async (req, res) => {
+exports.getAllTravels = catchAsync(async (req, res, next) => {
   const features = new APIfeatures(Travel.find(), req.query)
     .filter()
     .sort()
@@ -46,7 +46,7 @@ exports.createTravel = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateTravel = catchAsync(async (req, res) => {
+exports.updateTravel = catchAsync(async (req, res, next) => {
   const travels = await Travel.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -59,7 +59,7 @@ exports.updateTravel = catchAsync(async (req, res) => {
     },
   });
 });
-exports.deleteTravel = catchAsync(async (req, res) => {
+exports.deleteTravel = catchAsync(async (req, res, next) => {
   const travels = await Travel.findByIdAndDelete(req.params.id);
   res.status(200).json({
     status: 'Success ✅',
@@ -70,7 +70,7 @@ exports.deleteTravel = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTravelStats = catchAsync(async (req, res) => {
+exports.getTravelStats = catchAsync(async (req, res, next) => {
   const stats = await Travel.aggregate([
     {
       $match: { ratingsAverage: { $gte: 4.5 } },
@@ -100,7 +100,7 @@ exports.getTravelStats = catchAsync(async (req, res) => {
   });
 });
 
-exports.getMonthlyPlan = catchAsync(async (req, res) => {
+exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = req.params.year * 1;
   const plan = await Travel.aggregate([
     {
