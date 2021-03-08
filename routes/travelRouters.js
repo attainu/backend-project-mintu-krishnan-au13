@@ -20,6 +20,10 @@ router
   .route('/:id')
   .get(travelController.getTravel)
   .patch(travelController.updateTravel)
-  .delete(travelController.deleteTravel);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    travelController.deleteTravel
+  );
 
 module.exports = router;
