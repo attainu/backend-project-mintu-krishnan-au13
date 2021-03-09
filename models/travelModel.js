@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const User = require('./userModel');
+// const User = require('./userModel');
 
 const travelSchema = new mongoose.Schema(
   {
@@ -98,7 +98,12 @@ const travelSchema = new mongoose.Schema(
       description: String,
       day: Number,
     },
-    guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -115,11 +120,11 @@ travelSchema.pre('save', function (next) {
   next();
 });
 // embedding guide data in travel model by pre document middleware
-travelSchema.pre('save', async function (next) {
-  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
-  this.guides = await Promise.all(guidesPromises);
-  next();
-});
+// travelSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 // travelSchema.post('save', function (doc, next) {
 //   console.log(doc);
 //   next();
