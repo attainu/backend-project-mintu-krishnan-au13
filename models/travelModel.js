@@ -87,17 +87,19 @@ const travelSchema = new mongoose.Schema(
       address: String,
       description: String,
     },
-    locations: {
-      type: {
-        type: String,
-        default: 'Point',
-        enum: ['Point'],
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
       },
-      coordinates: [Number],
-      address: String,
-      description: String,
-      day: Number,
-    },
+    ],
     guides: [
       {
         type: mongoose.Schema.ObjectId,
@@ -137,13 +139,13 @@ travelSchema.pre(/^find/, function (next) {
   this.start = Date.now();
   next();
 });
-travelSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'guides',
-    select: '-__v -passwordChangedAt',
-  });
-  next();
-});
+// travelSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'guides',
+//     select: '-__v -passwordChangedAt',
+//   });
+//   next();
+// });
 
 travelSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds`);
@@ -160,6 +162,6 @@ travelSchema.pre('aggregate', function (next) {
   next();
 });
 
-const Travel = mongoose.model('travel', travelSchema);
+const Travel = mongoose.model('Travel', travelSchema);
 
 module.exports = Travel;
