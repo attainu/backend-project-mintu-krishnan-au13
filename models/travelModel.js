@@ -125,6 +125,7 @@ travelSchema.pre('save', function (next) {
 //   this.guides = await Promise.all(guidesPromises);
 //   next();
 // });
+//
 // travelSchema.post('save', function (doc, next) {
 //   console.log(doc);
 //   next();
@@ -136,6 +137,14 @@ travelSchema.pre(/^find/, function (next) {
   this.start = Date.now();
   next();
 });
+travelSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 travelSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds`);
   next();
