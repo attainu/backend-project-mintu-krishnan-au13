@@ -27,7 +27,7 @@ exports.getAllTravels = catchAsync(async (req, res, next) => {
   });
 });
 exports.getTravel = catchAsync(async (req, res, next) => {
-  const travels = await Travel.findById(req.params.id);
+  const travels = await await Travel.findById(req.params.id);
   if (!travels) {
     return next(new AppError('No travel found with that ID', 404));
   }

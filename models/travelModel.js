@@ -116,6 +116,13 @@ const travelSchema = new mongoose.Schema(
 travelSchema.virtual('durationWeeks').get(function () {
   return Math.round((this.duration / 7) * 10) / 10;
 });
+
+// Virtual Populate
+travelSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'travel',
+  localField: '_id',
+});
 // Document middleware
 travelSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
