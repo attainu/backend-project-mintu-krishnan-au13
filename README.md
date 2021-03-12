@@ -75,7 +75,7 @@ Before using the API, you need to set the variables in Postman depending on your
 - {{password}} with your user password as value.
 ```
 
-Check [Travel366 API Documentation](https://documenter.getpostman.com/view/11006835/Tz5p6yDd) for more info.
+Check [Travel366 API Documentation](https://documenter.getpostman.com/view/11006835/Tz5p6yJ8) for more info.
 
 <b> API Features: </b>
 
