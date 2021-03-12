@@ -1,6 +1,5 @@
 <h1 align="center">
   <br>
-  <br>
   Travel 366
   <br>
 </h1>
