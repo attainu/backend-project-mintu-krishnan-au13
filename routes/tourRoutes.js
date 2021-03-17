@@ -20,12 +20,18 @@ router.use('/:tourId/reviews', reviewRouter);
 // If not, send back 400 (bad requst)
 // Add it to the post handler stack
 
-router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours);
+router
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
 router
   .route('/monthly-plan/:year')
-  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), tourController.getMonthlyPlan);
+  .get(
+    protect,
+    restrictTo('admin', 'lead-guide', 'guide'),
+    tourController.getMonthlyPlan
+  );
 
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
@@ -50,6 +56,10 @@ router
     tourController.resizeTourImages,
     tourController.updateTour
   )
-  .delete(protect, restrictTo('admin', 'lead-guide'), tourController.deleteTour);
+  .delete(
+    protect,
+    restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour
+  );
 
 module.exports = router;

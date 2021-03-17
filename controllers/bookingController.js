@@ -4,6 +4,7 @@ const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+const { json } = require('body-parser');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 1) Get the currently booked tour
@@ -34,10 +35,19 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
           `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`,
         ],
         amount: tour.price * 100,
-        currency: 'usd',
+        currency: 'inr',
         quantity: 1,
       },
     ],
+  });
+
+  // const session = await Booking.create(req.body);
+  // let tou = req.user._id;
+  const booked = await Booking.create({
+    paid: true,
+    tour: tour._id,
+    price: tour.price,
+    user: req.user.id,
   });
 
   // 3) Create session as response
