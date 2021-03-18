@@ -8639,6 +8639,9 @@ function () {
 
             if (res.data.status === 'success') {
               (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully!"));
+              window.setTimeout(function () {
+                location.assign('/me');
+              }, 10);
             }
 
             _context.next = 11;
